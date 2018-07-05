@@ -27,7 +27,6 @@ public class MinMax {
     }
 
     public void setMinTemp(float minTemp) {
-        System.out.println("minTemp    "+this.minTemp);
         this.minTemp = minTemp;
     }
 
@@ -36,7 +35,6 @@ public class MinMax {
     }
 
     public void setMaxTemp(float maxTemp) {
-        System.out.println("maxTemp    "+this.maxTemp);
         this.maxTemp = maxTemp;
     }
 
@@ -45,7 +43,6 @@ public class MinMax {
     }
 
     public void setMinPres(float minPres) {
-        System.out.println("minPres    "+this.minPres);
         this.minPres = minPres;
     }
 
@@ -54,7 +51,6 @@ public class MinMax {
     }
 
     public void setMaxPres(float maxPres) {
-        System.out.println("maxPres    "+this.maxPres);
         this.maxPres = maxPres;
     }
 

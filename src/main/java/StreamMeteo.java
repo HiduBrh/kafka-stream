@@ -117,6 +117,7 @@ public class StreamMeteo {
                         return aggValue;
                     }
                 }, minmaxSerde,"min_max_store");
+        recordsTable.print();
 
         KafkaStreams streams = new KafkaStreams(builder.build(), props);
         streams.cleanUp();
