@@ -1,19 +1,17 @@
 /**
  * Created by idu on 04/07/2018.
  */
+import javassist.bytecode.ByteArray;
 import model.Commune;
 import model.MeteoDataRecord;
+import model.MinMax;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.Serializer;
-import org.apache.kafka.streams.Consumed;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.ForeachAction;
-import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.*;
+import org.apache.kafka.streams.kstream.*;
 import pojo.JsonPOJODeserializer;
 import pojo.JsonPOJOSerializer;
 
@@ -26,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class StreamMeteo {
 
@@ -51,6 +50,18 @@ public class StreamMeteo {
         meteoRecordDeserializer.configure(serdeProps, false);
 
         final Serde<MeteoDataRecord> meteoRecordSerde = Serdes.serdeFrom(meteoRecordSerializer, meteoRecordDeserializer);
+
+        //min max serdes
+        final Serializer<MinMax> minmaxSerializer = new JsonPOJOSerializer<>();
+        serdeProps.put("JsonPOJOClass", MinMax.class);
+        minmaxSerializer.configure(serdeProps, false);
+
+        final Deserializer<MinMax> minmaxDeserializer = new JsonPOJODeserializer<>();
+        serdeProps.put("JsonPOJOClass", MinMax.class);
+        minmaxDeserializer.configure(serdeProps, false);
+
+        final Serde<MinMax> minmaxSerde = Serdes.serdeFrom(minmaxSerializer, minmaxDeserializer);
+
         KStream<String, MeteoDataRecord> records = builder.stream("raw_station_data", Consumed.with(Serdes.String(), meteoRecordSerde));
 
         // create rest client
@@ -61,17 +72,50 @@ public class StreamMeteo {
                 .queryParam("format", "json")
                 .queryParam("fields","codeDepartement,departement");
 
-        records.foreach(new ForeachAction<String, MeteoDataRecord>() {
-            @Override
-            public void apply(String key, MeteoDataRecord value) {
-                System.out.println(key + ": " + value);
-                Commune[] commune = target.queryParam("lat", value.getLat())
-                        .queryParam("lon", value.getLon())
-                        .request(MediaType.APPLICATION_JSON)
-                        .get(Commune[].class);
-                System.out.println(commune);
-            }
-        });
+        records.map(
+                new KeyValueMapper<String, MeteoDataRecord, KeyValue<String, MeteoDataRecord>>() {
+                    @Override
+                    public KeyValue<String, MeteoDataRecord> apply(String key, MeteoDataRecord value) {
+                        Commune[] commune = target.queryParam("lat", value.getLat())
+                                .queryParam("lon", value.getLon())
+                                .request(MediaType.APPLICATION_JSON)
+                                .get(Commune[].class);
+
+                        value.setDepartement("unknown");
+                        value.setCommune("unknown");
+                        key = "unknown";
+
+                        if(commune.length>0) {
+                            if(commune[0].getDepartement().getNom() !=null)
+                                value.setDepartement(commune[0].getDepartement().getNom());
+                            if(commune[0].getNom() !=null)
+                                value.setCommune(commune[0].getNom());
+                            if(commune[0].getDepartement().getCode() != null)
+                                key = commune[0].getDepartement().getCode();
+                        }
+                        System.out.println(value);
+                        return new KeyValue<>(key, value);
+                    }
+                }).to("aggregated_station_data", Produced.with(Serdes.String(),meteoRecordSerde));
+
+        KGroupedStream<byte[], MeteoDataRecord> recordsTableStream = builder.stream("aggregated_station_data", Consumed.with(Serdes.ByteArray(), meteoRecordSerde)).groupByKey();
+        KTable<byte[], MinMax> recordsTable = recordsTableStream.aggregate(new Initializer<MinMax>(){
+                                   @Override
+                                   public MinMax apply() {
+                                       return new MinMax();
+                                   }
+                               },
+                new Aggregator< byte[], MeteoDataRecord, MinMax>(){
+
+                    @Override
+                    public MinMax apply(byte[] aggKey, MeteoDataRecord newValue, MinMax aggValue) {
+                        aggValue.setMinTemp(Math.min(aggValue.getMinTemp(),newValue.getTemperature()));
+                        aggValue.setMaxTemp(Math.max(aggValue.getMaxTemp(),newValue.getTemperature()));
+                        aggValue.setMinPres(Math.min(aggValue.getMinPres(),newValue.getPression()));
+                        aggValue.setMaxPres(Math.max(aggValue.getMaxPres(),newValue.getPression()));
+                        return aggValue;
+                    }
+                }, Materialized.with(Serdes.ByteArray(),minmaxSerde));
         KafkaStreams streams = new KafkaStreams(builder.build(), props);
         streams.cleanUp();
         streams.start();

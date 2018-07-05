@@ -15,6 +15,9 @@ public class MeteoDataRecord {
     private String nom;
     private float lat;
     private float lon;
+    private int codeDepartement;
+    private String departement;
+    private String commune;
 
     public int getId() {
         return id;
@@ -94,6 +97,30 @@ public class MeteoDataRecord {
 
     public void setLon(float lon) {
         this.lon = lon;
+    }
+
+    public int getCodeDepartement() {
+        return codeDepartement;
+    }
+
+    public void setCodeDepartement(int codeDepartement) {
+        this.codeDepartement = codeDepartement;
+    }
+
+    public String getDepartement() {
+        return departement;
+    }
+
+    public void setDepartement(String departement) {
+        this.departement = departement;
+    }
+
+    public String getCommune() {
+        return commune;
+    }
+
+    public void setCommune(String commune) {
+        this.commune = commune;
     }
 
     @Override
