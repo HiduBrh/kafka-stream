@@ -7,19 +7,13 @@ import java.io.Serializable;
 /**
  * Created by idu on 05/07/2018.
  */
-public class MinMax{
+public class MinMax {
 
     private float minTemp;
     private float maxTemp;
     private float minPres;
     private float maxPres;
 
-    public MinMax(float minTemp, float maxTemp, float minPres, float maxPres) {
-        this.minTemp = minTemp;
-        this.maxTemp = maxTemp;
-        this.minPres = minPres;
-        this.maxPres = maxPres;
-    }
     public MinMax() {
         this.minTemp = Float.POSITIVE_INFINITY;
         this.maxTemp = Float.NEGATIVE_INFINITY;
@@ -27,11 +21,13 @@ public class MinMax{
         this.maxPres = Float.NEGATIVE_INFINITY;
     }
 
+
     public float getMinTemp() {
         return minTemp;
     }
 
     public void setMinTemp(float minTemp) {
+        System.out.println("minTemp    "+this.minTemp);
         this.minTemp = minTemp;
     }
 
@@ -40,6 +36,7 @@ public class MinMax{
     }
 
     public void setMaxTemp(float maxTemp) {
+        System.out.println("maxTemp    "+this.maxTemp);
         this.maxTemp = maxTemp;
     }
 
@@ -48,6 +45,7 @@ public class MinMax{
     }
 
     public void setMinPres(float minPres) {
+        System.out.println("minPres    "+this.minPres);
         this.minPres = minPres;
     }
 
@@ -56,6 +54,7 @@ public class MinMax{
     }
 
     public void setMaxPres(float maxPres) {
+        System.out.println("maxPres    "+this.maxPres);
         this.maxPres = maxPres;
     }
 

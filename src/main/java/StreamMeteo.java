@@ -93,12 +93,13 @@ public class StreamMeteo {
                             if(commune[0].getDepartement().getCode() != null)
                                 key = commune[0].getDepartement().getCode();
                         }
-                        System.out.println(value);
+                        //System.out.println(value);
                         return new KeyValue<>(key, value);
                     }
                 }).to("aggregated_station_data", Produced.with(Serdes.String(),meteoRecordSerde));
 
         KGroupedStream<byte[], MeteoDataRecord> recordsTableStream = builder.stream("aggregated_station_data", Consumed.with(Serdes.ByteArray(), meteoRecordSerde)).groupByKey();
+
         KTable<byte[], MinMax> recordsTable = recordsTableStream.aggregate(new Initializer<MinMax>(){
                                    @Override
                                    public MinMax apply() {
@@ -115,7 +116,8 @@ public class StreamMeteo {
                         aggValue.setMaxPres(Math.max(aggValue.getMaxPres(),newValue.getPression()));
                         return aggValue;
                     }
-                }, Materialized.with(Serdes.ByteArray(),minmaxSerde));
+                }, minmaxSerde,"min_max_store");
+
         KafkaStreams streams = new KafkaStreams(builder.build(), props);
         streams.cleanUp();
         streams.start();
