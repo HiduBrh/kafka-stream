@@ -4,7 +4,6 @@
     <list default="true" id="ca49e2f9-df00-4aa5-95e9-1cf7a332f88b" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/StreamMeteo.java" afterPath="$PROJECT_DIR$/src/main/java/StreamMeteo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/MinMax.java" afterPath="$PROJECT_DIR$/src/main/java/model/MinMax.java" />
     </list>
     <ignored path="stream-kafka.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -40,12 +39,13 @@
       <file leaf-file-name="StreamMeteo.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/StreamMeteo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-272">
-              <caret line="105" column="35" selection-start-line="105" selection-start-column="35" selection-end-line="105" selection-end-column="35" />
+            <state relative-caret-position="233">
+              <caret line="133" column="2" selection-start-line="133" selection-start-column="2" selection-end-line="133" selection-end-column="2" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="imports" expanded="true" />
-                <element signature="e#4922#4923#0" expanded="true" />
+                <element signature="e#4991#4992#0" expanded="true" />
+                <element signature="e#5042#5043#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -182,6 +182,7 @@
         <option value="$PROJECT_DIR$/src/main/java/pojo/JsonPOJOSerializer.java" />
         <option value="$PROJECT_DIR$/src/main/java/pojo/JsonPOJODeserializer.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/MinMax.java" />
+        <option value="$MAVEN_REPOSITORY$/org/apache/kafka/kafka-streams/1.0.1/kafka-streams-1.0.1.jar!/org/apache/kafka/streams/kstream/KTable.class" />
         <option value="$PROJECT_DIR$/src/main/java/StreamMeteo.java" />
       </list>
     </option>
@@ -896,7 +897,7 @@
       <workItem from="1530694325447" duration="6748000" />
       <workItem from="1530709344723" duration="33945000" />
       <workItem from="1530818833309" duration="4706000" />
-      <workItem from="1530865362334" duration="1046000" />
+      <workItem from="1530865362334" duration="2701000" />
     </task>
     <task id="LOCAL-00001" summary="done">
       <created>1530822225177</created>
@@ -912,11 +913,18 @@
       <option name="project" value="LOCAL" />
       <updated>1530822764652</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="done">
+      <created>1530866437923</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1530866437924</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="46445000" />
+    <option name="totallyTimeSpent" value="48100000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -975,7 +983,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/StreamMeteo.java</url>
-          <line>123</line>
+          <line>125</line>
           <properties />
           <option name="timeStamp" value="11" />
         </line-breakpoint>
@@ -1004,7 +1012,8 @@
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
-            <element signature="e#4922#4923#0" expanded="true" />
+            <element signature="e#4991#4992#0" expanded="true" />
+            <element signature="e#5042#5043#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1114,7 +1123,8 @@
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
-            <element signature="e#4922#4923#0" expanded="true" />
+            <element signature="e#4991#4992#0" expanded="true" />
+            <element signature="e#5042#5043#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1224,7 +1234,8 @@
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
-            <element signature="e#4922#4923#0" expanded="true" />
+            <element signature="e#4991#4992#0" expanded="true" />
+            <element signature="e#5042#5043#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1379,14 +1390,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/apache/kafka/kafka-streams/1.0.1/kafka-streams-1.0.1.jar!/org/apache/kafka/streams/kstream/KTable.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="141">
+          <caret line="210" column="24" selection-start-line="210" selection-start-column="24" selection-end-line="210" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/StreamMeteo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-272">
-          <caret line="105" column="35" selection-start-line="105" selection-start-column="35" selection-end-line="105" selection-end-column="35" />
+        <state relative-caret-position="233">
+          <caret line="133" column="2" selection-start-line="133" selection-start-column="2" selection-end-line="133" selection-end-column="2" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
-            <element signature="e#4922#4923#0" expanded="true" />
+            <element signature="e#4991#4992#0" expanded="true" />
+            <element signature="e#5042#5043#0" expanded="true" />
           </folding>
         </state>
       </provider>

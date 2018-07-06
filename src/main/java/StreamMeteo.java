@@ -12,6 +12,8 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.state.QueryableStoreTypes;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import pojo.JsonPOJODeserializer;
 import pojo.JsonPOJOSerializer;
 
@@ -125,6 +127,12 @@ public class StreamMeteo {
         recordsTable.print();
 
         KafkaStreams streams = new KafkaStreams(builder.build(), props);
+/*
+        ReadOnlyKeyValueStore<String, MinMax> keyValueStore =
+                streams.store("min_max_store", QueryableStoreTypes.keyValueStore());
+        keyValueStore.get()
+*/
+
         streams.cleanUp();
         streams.start();
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
