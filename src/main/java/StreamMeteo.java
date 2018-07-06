@@ -34,6 +34,8 @@ public class StreamMeteo {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-meteo-data");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:29092");
+        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.StringSerde.class);
+
 
         // setting offset reset to earliest so that we can re-run the demo code with the same pre-loaded data
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
@@ -96,11 +98,11 @@ public class StreamMeteo {
                                 key = commune[0].getDepartement().getCode();
                         }
                         //System.out.println(value);
-                        return new KeyValue<>(key, value);
+                        return new KeyValue<String, MeteoDataRecord>(key, value);
                     }
                 }).to("aggregated_station_data", Produced.with(Serdes.String(),meteoRecordSerde));
 
-        KGroupedStream<byte[], MeteoDataRecord> recordsTableStream = builder.stream("aggregated_station_data", Consumed.with(Serdes.ByteArray(), meteoRecordSerde)).groupByKey();
+        KGroupedStream<String, MeteoDataRecord> recordsTableStream = builder.stream("aggregated_station_data", Consumed.with(Serdes.String(), meteoRecordSerde)).groupByKey();
 
         // initialisation de l'objet de stockage des aggregations
         Initializer<MinMax> initializer = new Initializer<MinMax>(){
@@ -110,10 +112,10 @@ public class StreamMeteo {
             }
         };
         // recuperer min Temperature, minPressure, max temperature, max pressure par departement
-        Aggregator< byte[], MeteoDataRecord, MinMax> aggregator = new Aggregator< byte[], MeteoDataRecord, MinMax>(){
+        Aggregator< String, MeteoDataRecord, MinMax> aggregator = new Aggregator< String, MeteoDataRecord, MinMax>(){
 
             @Override
-            public MinMax apply(byte[] aggKey, MeteoDataRecord newValue, MinMax aggValue) {
+            public MinMax apply(String aggKey, MeteoDataRecord newValue, MinMax aggValue) {
                 aggValue.setMinTemp(Math.min(aggValue.getMinTemp(),newValue.getTemperature()));
                 aggValue.setMaxTemp(Math.max(aggValue.getMaxTemp(),newValue.getTemperature()));
                 aggValue.setMinPres(Math.min(aggValue.getMinPres(),newValue.getPression()));
@@ -123,7 +125,7 @@ public class StreamMeteo {
             }
         };
 
-        KTable<byte[], MinMax> recordsTable = recordsTableStream.aggregate(initializer,aggregator,minmaxSerde,"min_max_store");
+        KTable<String, MinMax> recordsTable = recordsTableStream.aggregate(initializer,aggregator,minmaxSerde,"min_max_store");
         recordsTable.print();
 
         KafkaStreams streams = new KafkaStreams(builder.build(), props);
