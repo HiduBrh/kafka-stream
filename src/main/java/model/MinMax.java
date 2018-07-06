@@ -13,6 +13,7 @@ public class MinMax {
     private float maxTemp;
     private float minPres;
     private float maxPres;
+    private String departement;
 
     public MinMax() {
         this.minTemp = Float.POSITIVE_INFINITY;
@@ -54,6 +55,14 @@ public class MinMax {
         this.maxPres = maxPres;
     }
 
+    public String getDepartement() {
+        return departement;
+    }
+
+    public void setDepartement(String departement) {
+        this.departement = departement;
+    }
+
     @Override
     public String toString() {
         return "MinMax{" +
@@ -61,6 +70,7 @@ public class MinMax {
                 ", maxTemp=" + maxTemp +
                 ", minPres=" + minPres +
                 ", maxPres=" + maxPres +
+                ", departement='" + departement + '\'' +
                 '}';
     }
 }

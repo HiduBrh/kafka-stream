@@ -100,23 +100,28 @@ public class StreamMeteo {
 
         KGroupedStream<byte[], MeteoDataRecord> recordsTableStream = builder.stream("aggregated_station_data", Consumed.with(Serdes.ByteArray(), meteoRecordSerde)).groupByKey();
 
-        KTable<byte[], MinMax> recordsTable = recordsTableStream.aggregate(new Initializer<MinMax>(){
-                                   @Override
-                                   public MinMax apply() {
-                                       return new MinMax();
-                                   }
-                               },
-                new Aggregator< byte[], MeteoDataRecord, MinMax>(){
+        // initialisation de l'objet de stockage des aggregations
+        Initializer<MinMax> initializer = new Initializer<MinMax>(){
+            @Override
+            public MinMax apply() {
+                return new MinMax();
+            }
+        };
+        // recuperer min Temperature, minPressure, max temperature, max pressure par departement
+        Aggregator< byte[], MeteoDataRecord, MinMax> aggregator = new Aggregator< byte[], MeteoDataRecord, MinMax>(){
 
-                    @Override
-                    public MinMax apply(byte[] aggKey, MeteoDataRecord newValue, MinMax aggValue) {
-                        aggValue.setMinTemp(Math.min(aggValue.getMinTemp(),newValue.getTemperature()));
-                        aggValue.setMaxTemp(Math.max(aggValue.getMaxTemp(),newValue.getTemperature()));
-                        aggValue.setMinPres(Math.min(aggValue.getMinPres(),newValue.getPression()));
-                        aggValue.setMaxPres(Math.max(aggValue.getMaxPres(),newValue.getPression()));
-                        return aggValue;
-                    }
-                }, minmaxSerde,"min_max_store");
+            @Override
+            public MinMax apply(byte[] aggKey, MeteoDataRecord newValue, MinMax aggValue) {
+                aggValue.setMinTemp(Math.min(aggValue.getMinTemp(),newValue.getTemperature()));
+                aggValue.setMaxTemp(Math.max(aggValue.getMaxTemp(),newValue.getTemperature()));
+                aggValue.setMinPres(Math.min(aggValue.getMinPres(),newValue.getPression()));
+                aggValue.setMaxPres(Math.max(aggValue.getMaxPres(),newValue.getPression()));
+                aggValue.setDepartement(newValue.getDepartement());
+                return aggValue;
+            }
+        };
+
+        KTable<byte[], MinMax> recordsTable = recordsTableStream.aggregate(initializer,aggregator,minmaxSerde,"min_max_store");
         recordsTable.print();
 
         KafkaStreams streams = new KafkaStreams(builder.build(), props);
